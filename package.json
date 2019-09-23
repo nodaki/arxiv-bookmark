@@ -15,7 +15,8 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^3.0.0-0",
     "nuxt": "^2.0.0",
-    "rss-parser": "^3.7.2"
+    "rss-parser": "^3.7.2",
+    "vue-clamp": "^0.2.2"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0",

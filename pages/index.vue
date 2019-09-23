@@ -1,9 +1,24 @@
 <template>
+  <v-row>
+    <v-col v-for="(paper, i) in papers" :key="i" sm="12">
+      <v-card>
+        <v-card-title>{{ paper.entry.title }}</v-card-title>
+        <v-card-text>
+          <v-clamp autoresize max-lines="3">
+            {{ paper.entry.summary }}
+          </v-clamp>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-
+import VClamp from 'vue-clamp'
 export default {
+  components: {
+    VClamp
+  },
   data () {
     return {
       papers: [
