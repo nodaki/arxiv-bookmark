@@ -4,12 +4,21 @@
       <v-card>
         <v-card-title>{{ paper.title }}</v-card-title>
         <v-card-text>
+          <!-- Summary -->
           <v-clamp autoresize :max-lines="clampMaxLines">
             {{ paper.summary }}
           </v-clamp>
-        </v-card-text>
-        <v-card-text>
-          {{ paper.updated }}
+          <!-- Conference -->
+          <v-chip
+            v-for="(conference, j) in paper.conferences"
+            :key="j"
+            label
+            color="amber"
+            text-color="white"
+            class="font-weight-bold mt-3"
+          >
+            {{ conference }}
+          </v-chip>
         </v-card-text>
       </v-card>
     </v-col>
@@ -35,7 +44,8 @@ export default {
           authors: [],
           link: '',
           categories: [],
-          comment: ''
+          comment: '',
+          conferences: []
         }
       ]
     }
@@ -73,6 +83,20 @@ export default {
         feed.items.forEach(function (entry) {
           const pubDate = new Date(entry.published)
           const updatedDate = new Date(entry.updated)
+          let comment
+          if (entry.comment) {
+            comment = entry.comment._
+          } else {
+            comment = ''
+          }
+          // Get conference info from comment.
+          const searchConferences = ['CVPR', 'ICCV', 'ACCV', 'ECCV', 'NIPS', 'NeurIPS', 'SIGGRAPH', 'AAAI', 'ICML', 'IJCAI']
+          const conferences = []
+          searchConferences.forEach(function (conference) {
+            if (comment.includes(conference)) {
+              conferences.push(conference)
+            }
+          })
           papers.push({
             title: entry.title,
             id: entry.id,
@@ -81,7 +105,8 @@ export default {
             summary: entry.summary,
             authors: entry.authors,
             categories: entry.categories,
-            comment: entry.comment
+            comment,
+            conferences
           })
         })
       })
