@@ -1,19 +1,38 @@
 <template>
   <v-row>
-    <v-col v-for="(paper, i) in papers" :key="i" sm="12">
+    <v-col v-for="(paper, i) in papers" :key="i" xs="12" sm="12">
       <v-card>
-        <v-card-title>{{ paper.title }}</v-card-title>
+        <v-card-title class="mb-2">
+          {{ paper.title }}
+        </v-card-title>
         <v-card-text>
+          <!-- Authors -->
+          <div>
+            <v-chip
+              v-for="(author, j) in paper.authors"
+              :key="j"
+              class="caption mr-1 mb-2"
+              outlined
+              small
+              label
+              color="brown lighten-1"
+            >
+              <v-icon left small>
+                mdi-account-circle-outline
+              </v-icon>
+              {{ author.name[0] }}
+            </v-chip>
+          </div>
           <!-- Summary -->
-          <v-clamp autoresize :max-lines="clampMaxLines">
+          <v-clamp class="mt-2" autoresize :max-lines="clampMaxLines">
             {{ paper.summary }}
           </v-clamp>
           <div class="font-weight-bold mt-3">
             <!-- New or update -->
-            <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white">
+            <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
               New
             </v-chip>
-            <v-chip v-else label color="teal lighten-3" text-color="white">
+            <v-chip v-else label color="teal lighten-3" text-color="white" small>
               Updated
             </v-chip>
             <!-- Conference -->
@@ -23,6 +42,7 @@
               label
               color="amber lighten-1"
               text-color="white"
+              small
             >
               {{ conference }}
             </v-chip>
