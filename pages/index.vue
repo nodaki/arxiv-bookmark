@@ -8,17 +8,25 @@
           <v-clamp autoresize :max-lines="clampMaxLines">
             {{ paper.summary }}
           </v-clamp>
-          <!-- Conference -->
-          <v-chip
-            v-for="(conference, j) in paper.conferences"
-            :key="j"
-            label
-            color="amber"
-            text-color="white"
-            class="font-weight-bold mt-3"
-          >
-            {{ conference }}
-          </v-chip>
+          <div class="font-weight-bold mt-3">
+            <!-- New or update -->
+            <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white">
+              New
+            </v-chip>
+            <v-chip v-else label color="teal lighten-3" text-color="white">
+              Updated
+            </v-chip>
+            <!-- Conference -->
+            <v-chip
+              v-for="(conference, j) in paper.conferences"
+              :key="j"
+              label
+              color="amber lighten-1"
+              text-color="white"
+            >
+              {{ conference }}
+            </v-chip>
+          </div>
         </v-card-text>
       </v-card>
     </v-col>
@@ -45,7 +53,8 @@ export default {
           link: '',
           categories: [],
           comment: '',
-          conferences: []
+          conferences: [],
+          isNew: true
         }
       ]
     }
@@ -83,6 +92,8 @@ export default {
         feed.items.forEach(function (entry) {
           const pubDate = new Date(entry.published)
           const updatedDate = new Date(entry.updated)
+          // Check whether new or update
+          const isNew = entry.published === entry.updated
           let comment
           if (entry.comment) {
             comment = entry.comment._
@@ -106,7 +117,8 @@ export default {
             authors: entry.authors,
             categories: entry.categories,
             comment,
-            conferences
+            conferences,
+            isNew
           })
         })
       })
