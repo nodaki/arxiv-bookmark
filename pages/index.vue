@@ -27,24 +27,40 @@
           <v-clamp class="mt-2" autoresize :max-lines="clampMaxLines">
             {{ paper.summary }}
           </v-clamp>
-          <div class="font-weight-bold mt-3">
+          <div class="mt-3">
             <!-- New or update -->
-            <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
-              New
-            </v-chip>
-            <v-chip v-else label color="teal lighten-3" text-color="white" small>
-              Updated
-            </v-chip>
+            <span class="font-weight-bold">
+              <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
+                New
+              </v-chip>
+              <v-chip v-else label color="teal lighten-3" text-color="white" small>
+                Updated
+              </v-chip>
+            </span>
             <!-- Conference -->
+            <span class="font-weight-bold">
+              <v-chip
+                v-for="(conference, j) in paper.conferences"
+                :key="j"
+                label
+                color="amber lighten-1"
+                text-color="white"
+                small
+              >
+                {{ conference }}
+              </v-chip>
+            </span>
+            <!-- Categories -->
             <v-chip
-              v-for="(conference, j) in paper.conferences"
-              :key="j"
-              label
-              color="amber lighten-1"
-              text-color="white"
+              v-for="(category, k) in paper.categories"
+              :key="k"
               small
+              label
+              class="mr-1"
+              color="grey lighten-2"
+              text-color="grey darken-2"
             >
-              {{ conference }}
+              {{ category.$.term }}
             </v-chip>
           </div>
         </v-card-text>
