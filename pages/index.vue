@@ -24,44 +24,60 @@
             </v-chip>
           </div>
           <!-- Summary -->
-          <v-clamp class="mt-2" autoresize :max-lines="clampMaxLines">
+          <v-clamp class="mt-2 body" autoresize :max-lines="clampMaxLines">
             {{ paper.summary }}
           </v-clamp>
-          <div class="mt-3">
-            <!-- New or update -->
-            <span class="font-weight-bold">
-              <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
-                New
-              </v-chip>
-              <v-chip v-else label color="teal lighten-3" text-color="white" small>
-                Updated
-              </v-chip>
-            </span>
-            <!-- Conference -->
-            <span class="font-weight-bold">
+          <div class="mt-4 ml-3 mr-3">
+            <v-row>
+              <!-- New or update -->
+              <span class="font-weight-bold mr-1">
+                <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
+                  New
+                </v-chip>
+                <v-chip v-else label color="teal lighten-3" text-color="white" small>
+                  Updated
+                </v-chip>
+              </span>
+              <!-- Conference -->
+              <span class="font-weight-bold">
+                <v-chip
+                  v-for="(conference, j) in paper.conferences"
+                  :key="j"
+                  label
+                  color="amber lighten-1"
+                  text-color="white"
+                  small
+                  class="mr-1"
+                >
+                  {{ conference }}
+                </v-chip>
+              </span>
+              <!-- Categories -->
               <v-chip
-                v-for="(conference, j) in paper.conferences"
-                :key="j"
-                label
-                color="amber lighten-1"
-                text-color="white"
+                v-for="(category, k) in paper.categories"
+                :key="k"
                 small
+                label
+                class="mr-1"
+                color="grey lighten-2"
+                text-color="grey darken-2"
               >
-                {{ conference }}
+                {{ category.$.term }}
               </v-chip>
-            </span>
-            <!-- Categories -->
-            <v-chip
-              v-for="(category, k) in paper.categories"
-              :key="k"
-              small
-              label
-              class="mr-1"
-              color="grey lighten-2"
-              text-color="grey darken-2"
-            >
-              {{ category.$.term }}
-            </v-chip>
+              <v-spacer />
+              <!-- Calendar -->
+              <div>
+                <v-icon small>
+                  calendar_today
+                </v-icon>
+                <span>
+                  {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                </span>
+                <span v-if="!paper.isNew" class="body-2">
+                  (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                </span>
+              </div>
+            </v-row>
           </div>
         </v-card-text>
       </v-card>
