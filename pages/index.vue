@@ -62,6 +62,7 @@
                   class="mr-1"
                   color="grey lighten-2"
                   text-color="grey darken-2"
+                  @click="setCategory(category.$.term)"
                 >
                   {{ category.$.term }}
                 </v-chip>
@@ -85,7 +86,7 @@
       </v-col>
     </v-row>
     <div>
-      <infinite-loading spinner="spiral" @infinite="infiniteHandler" />
+      <infinite-loading ref="infiniteLoading" spinner="spiral" @infinite="infiniteHandler" />
     </div>
   </div>
 </template>
@@ -183,6 +184,13 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    setCategory (cat) {
+      this.cat = cat
+      this.page = 0
+      this.papers = []
+      // Reset infinite loading
+      this.$refs.infiniteLoading.stateChanger.reset()
     }
   }
 }
