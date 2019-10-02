@@ -31,6 +31,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src: '~/plugins/vue-infinite-loading', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -83,5 +84,8 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  server: {
+    host: '0.0.0.0'
   }
 }

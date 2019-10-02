@@ -16,7 +16,8 @@
     "@nuxtjs/pwa": "^3.0.0-0",
     "nuxt": "^2.0.0",
     "rss-parser": "^3.7.2",
-    "vue-clamp": "^0.2.2"
+    "vue-clamp": "^0.2.2",
+    "vue-infinite-loading": "^2.4.4"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0",
