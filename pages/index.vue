@@ -49,6 +49,7 @@
                     text-color="white"
                     small
                     class="mr-1"
+                    @click="setComment(conference)"
                   >
                     {{ conference }}
                   </v-chip>
@@ -103,7 +104,7 @@ export default {
       page: 0,
       maxResults: 10,
       cat: 'cs.CV',
-      initLoading: false,
+      comment: '',
       baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query=',
       papers: []
     }
@@ -173,8 +174,15 @@ export default {
       try {
         this.loading = false
         const start = `&start=${this.page * this.maxResults}`
+        const andOperator = '+AND+'
         const cat = `cat:${this.cat}`
-        const url = this.baseUrl + cat + start + `&max_results=${this.maxResults}`
+        let searchQuery
+        if (this.comment) {
+          searchQuery = cat + andOperator + `co:${this.comment}`
+        } else {
+          searchQuery = cat
+        }
+        const url = this.baseUrl + searchQuery + start + `&max_results=${this.maxResults}`
         const papers = await this.asyncGetPapers(url)
         this.papers.push(...papers)
         this.page += 1
@@ -185,12 +193,19 @@ export default {
         this.loading = false
       }
     },
-    setCategory (cat) {
-      this.cat = cat
+    resetInfiniteLoading () {
       this.page = 0
       this.papers = []
       // Reset infinite loading
       this.$refs.infiniteLoading.stateChanger.reset()
+    },
+    setCategory (cat) {
+      this.cat = cat
+      this.resetInfiniteLoading()
+    },
+    setComment (comment) {
+      this.comment = comment
+      this.resetInfiniteLoading()
     }
   }
 }
