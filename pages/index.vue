@@ -63,7 +63,6 @@
                   class="mr-1"
                   color="grey lighten-2"
                   text-color="grey darken-2"
-                  @click="setCategory(category.$.term)"
                 >
                   {{ category.$.term }}
                 </v-chip>
@@ -93,6 +92,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import VClamp from 'vue-clamp'
 export default {
   components: {
@@ -101,15 +101,43 @@ export default {
   data () {
     return {
       clampMaxLines: 3,
-      page: 0,
       maxResults: 10,
-      cat: 'cs.CV',
+      initCat: ['cs.CV'],
       comment: '',
-      baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query=',
-      papers: []
+      baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query='
     }
   },
+  computed: {
+    ...mapState({
+      papers: state => state.papers,
+      page: state => state.page,
+      categories: state => state.categories
+    }),
+    ...mapGetters([
+      'getResetInfiniteLoadingFlag'
+    ])
+  },
+  watch: {
+    getResetInfiniteLoadingFlag (val) {
+      if (val) {
+        this.resetInfiniteLoading()
+        this.setInfiniteLoadingFlag(false)
+      }
+    }
+  },
+  mounted () {
+    this.setCategories(this.initCat)
+  },
   methods: {
+    ...mapMutations([
+      'setCategories',
+      'addCategory',
+      'addPapers',
+      'incrementPage',
+      'resetPapers',
+      'resetPage',
+      'setInfiniteLoadingFlag'
+    ]),
     async asyncGetPapers (url) {
       const Parser = require('rss-parser')
       const options = {
@@ -175,17 +203,22 @@ export default {
         this.loading = false
         const start = `&start=${this.page * this.maxResults}`
         const andOperator = '+AND+'
-        const cat = `cat:${this.cat}`
+        // Categories
+        const cat = []
+        this.categories.forEach(function (category) {
+          cat.push(`cat:${category}`)
+        })
+        const searchCat = cat.join('+OR+')
         let searchQuery
         if (this.comment) {
-          searchQuery = cat + andOperator + `co:${this.comment}`
+          searchQuery = searchCat + andOperator + `co:${this.comment}`
         } else {
-          searchQuery = cat
+          searchQuery = searchCat
         }
         const url = this.baseUrl + searchQuery + start + `&max_results=${this.maxResults}`
         const papers = await this.asyncGetPapers(url)
-        this.papers.push(...papers)
-        this.page += 1
+        this.addPapers(papers)
+        this.incrementPage()
         $state.loaded()
       } catch (e) {
         $state.complete()
@@ -194,14 +227,10 @@ export default {
       }
     },
     resetInfiniteLoading () {
-      this.page = 0
-      this.papers = []
+      this.resetPapers()
+      this.resetPage()
       // Reset infinite loading
       this.$refs.infiniteLoading.stateChanger.reset()
-    },
-    setCategory (cat) {
-      this.cat = cat
-      this.resetInfiniteLoading()
     },
     setComment (comment) {
       this.comment = comment
