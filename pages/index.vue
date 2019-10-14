@@ -90,7 +90,7 @@
       <v-col>
         <v-dialog v-model="dialog" max-width="800" scrollable>
           <v-card>
-            <v-card-text>
+            <v-card-text id="scroll-target">
               <!-- Title -->
               <div class="title text--primary pb-3 pt-5">
                 {{ dialogContent.title }}
@@ -318,6 +318,11 @@ export default {
       this.dialogContent.updated = paper.updated
       this.dialogContent.isNew = paper.isNew
       this.dialog = true
+      // Set scroll top to 0
+      this.$nextTick(() => {
+        const i = document.getElementById('scroll-target')
+        i.attributes[1].ownerElement.scrollTop = 0
+      })
     }
   }
 }
