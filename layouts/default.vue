@@ -30,6 +30,8 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+      <v-spacer />
+      <search-box style="width: 40vw" />
     </v-app-bar>
     <v-content>
       <v-container>
@@ -40,7 +42,11 @@
 </template>
 
 <script>
+import SearchBox from '../components/SearchBox'
 export default {
+  components: {
+    SearchBox
+  },
   data () {
     return {
       drawer: false,
