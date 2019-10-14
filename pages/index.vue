@@ -3,7 +3,7 @@
     <v-row>
       <v-col v-for="(paper, i) in papers" :key="i" xs="12" sm="12">
         <v-card>
-          <v-card-title class="mb-2">
+          <v-card-title class="mb-2" @click="openDialog(paper)">
             {{ paper.title }}
           </v-card-title>
           <v-card-text>
@@ -85,6 +85,74 @@
         </v-card>
       </v-col>
     </v-row>
+    <!-- Dialog -->
+    <v-row>
+      <v-col>
+        <v-dialog v-model="dialog" max-width="800" scrollable>
+          <v-card>
+            <v-card-text>
+              <!-- Title -->
+              <div class="title text--primary pb-3 pt-5">
+                {{ dialogContent.title }}
+              </div>
+              <!-- Authors -->
+              <div class="pb-1">
+                <v-chip
+                  v-for="(author, j) in dialogContent.authors"
+                  :key="j"
+                  class="caption mr-1 mb-2"
+                  outlined
+                  small
+                  label
+                  color="brown lighten-1"
+                >
+                  <v-icon left small>
+                    mdi-account-circle-outline
+                  </v-icon>
+                  {{ author.name[0] }}
+                </v-chip>
+              </div>
+              <div class="pb-2">
+                <!-- Calendar -->
+                <v-icon small>
+                  calendar_today
+                </v-icon>
+                <span class="body-2">
+                  {{ dialogContent.updated.year }}/{{ dialogContent.updated.month }}/{{ dialogContent.updated.day }}
+                </span>
+                <span v-if="!dialogContent.isNew" class="body-2">
+                  (v1: {{ dialogContent.published.year }}/{{ dialogContent.published.month }}/{{ dialogContent.published.day }})
+                </span>
+              </div>
+              <!-- Abstract -->
+              <div class="text-center text--primary pb-1">
+                Abstract
+              </div>
+              <!-- Abstract -->
+              <div class="text--primary">
+                {{ dialogContent.summary }}
+              </div>
+              <!-- Comment -->
+              <div class="caption pt-2">
+                Comment: {{ dialogContent.comment }}
+              </div>
+            </v-card-text>
+            <v-divider />
+            <!-- Actions -->
+            <v-card-actions>
+              <div class="flex-grow-1" />
+              <v-btn color="primary" text @click="dialog = false">
+                Close
+              </v-btn>
+              <v-btn color="primary" :href="dialogContent.pdf" target="_blank">
+                Full Text
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-col>
+    </v-row>
+    <!-- Infinite Loading -->
     <div>
       <infinite-loading ref="infiniteLoading" spinner="spiral" @infinite="infiniteHandler" />
     </div>
@@ -104,7 +172,9 @@ export default {
       maxResults: 10,
       initCat: ['cs.CV'],
       comment: '',
-      baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query='
+      baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query=',
+      dialog: false,
+      dialogContent: { title: '', summary: '', pdf: '', authors: [], comment: '', published: '', updated: '', isNew: null }
     }
   },
   computed: {
@@ -183,6 +253,8 @@ export default {
         })
         papers.push({
           title: entry.title,
+          link: entry.link,
+          pdf: `https://arxiv.org/pdf/${entry.link.split('/')[4]}.pdf`,
           id: entry.id,
           published: parseDate(pubDate),
           updated: parseDate(updatedDate),
@@ -235,6 +307,17 @@ export default {
     setComment (comment) {
       this.comment = comment
       this.resetInfiniteLoading()
+    },
+    openDialog (paper) {
+      this.dialogContent.title = paper.title
+      this.dialogContent.summary = paper.summary
+      this.dialogContent.pdf = paper.pdf
+      this.dialogContent.authors = paper.authors
+      this.dialogContent.comment = paper.comment
+      this.dialogContent.published = paper.published
+      this.dialogContent.updated = paper.updated
+      this.dialogContent.isNew = paper.isNew
+      this.dialog = true
     }
   }
 }
