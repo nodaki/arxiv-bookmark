@@ -2,107 +2,109 @@
   <div>
     <v-row v-for="(paper, i) in papers" :key="i">
       <v-col>
-        <v-card>
-          <v-card-title class="mb-2" @click="openDialog(paper)">
-            {{ paper.title }}
-          </v-card-title>
-          <v-card-text>
-            <!-- Authors -->
-            <div>
-              <v-chip class="caption mr-1 mb-2" outlined x-small label color="brown lighten-1">
-                <v-icon left small>
-                  mdi-account-circle-outline
-                </v-icon>
-                {{ paper.authors[0].name[0] }}
-              </v-chip>
-              <v-chip
-                v-for="(author, j) in paper.authors.slice(1)"
-                :key="j"
-                class="caption mr-1 mb-2 hidden-xs-only"
-                outlined
-                x-small
-                label
-                color="brown lighten-1"
-              >
-                <v-icon left small>
-                  mdi-account-circle-outline
-                </v-icon>
-                {{ author.name[0] }}
-              </v-chip>
-            </div>
-            <!-- Summary -->
-            <v-clamp class="body mt-2" autoresize :max-lines="clampMaxLines">
-              {{ paper.summary }}
-            </v-clamp>
-            <div class="mt-4 ml-3 mr-3">
-              <v-row class="mt-1">
-                <!-- New or update -->
-                <span class="font-weight-bold mr-1 mb-1">
-                  <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
-                    New
-                  </v-chip>
-                  <v-chip v-else label color="teal lighten-3" text-color="white" small>
-                    Updated
-                  </v-chip>
-                </span>
-                <!-- Conference -->
-                <span class="font-weight-bold">
-                  <v-chip
-                    v-for="(conference, j) in paper.conferences"
-                    :key="j"
-                    label
-                    color="amber lighten-1"
-                    text-color="white"
-                    small
-                    class="mr-1 mb-1"
-                    @click="setComment(conference)"
-                  >
-                    {{ conference }}
-                  </v-chip>
-                </span>
-                <!-- Categories -->
-                <v-chip
-                  v-for="(category, k) in paper.categories"
-                  :key="k"
-                  small
-                  label
-                  class="mr-1 mb-1"
-                  color="grey lighten-2"
-                  text-color="grey darken-2"
-                >
-                  {{ category.$.term }}
+        <v-hover v-slot:default="{ hover }">
+          <v-card :elevation="hover ? 10 : 2" :ripple="false" @click="openDialog(paper)">
+            <v-card-title class="mb-2" @click="openDialog(paper)">
+              {{ paper.title }}
+            </v-card-title>
+            <v-card-text>
+              <!-- Authors -->
+              <div>
+                <v-chip class="caption mr-1 mb-2" outlined x-small label color="brown lighten-1">
+                  <v-icon left small>
+                    mdi-account-circle-outline
+                  </v-icon>
+                  {{ paper.authors[0].name[0] }}
                 </v-chip>
-                <v-spacer />
-                <!-- Calendar -->
-                <div class="hidden-xs-only">
-                  <v-icon x-small>
-                    calendar_today
+                <v-chip
+                  v-for="(author, j) in paper.authors.slice(1)"
+                  :key="j"
+                  class="caption mr-1 mb-2 hidden-xs-only"
+                  outlined
+                  x-small
+                  label
+                  color="brown lighten-1"
+                >
+                  <v-icon left small>
+                    mdi-account-circle-outline
                   </v-icon>
-                  <span class="caption">
-                    {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                  {{ author.name[0] }}
+                </v-chip>
+              </div>
+              <!-- Summary -->
+              <v-clamp class="body mt-2" autoresize :max-lines="clampMaxLines">
+                {{ paper.summary }}
+              </v-clamp>
+              <div class="mt-4 ml-3 mr-3">
+                <v-row class="mt-1">
+                  <!-- New or update -->
+                  <span class="font-weight-bold mr-1 mb-1">
+                    <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
+                      New
+                    </v-chip>
+                    <v-chip v-else label color="teal lighten-3" text-color="white" small>
+                      Updated
+                    </v-chip>
                   </span>
-                  <span v-if="!paper.isNew" class="caption">
-                    (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                  <!-- Conference -->
+                  <span class="font-weight-bold">
+                    <v-chip
+                      v-for="(conference, j) in paper.conferences"
+                      :key="j"
+                      label
+                      color="amber lighten-1"
+                      text-color="white"
+                      small
+                      class="mr-1 mb-1"
+                      @click="setComment(conference)"
+                    >
+                      {{ conference }}
+                    </v-chip>
                   </span>
-                </div>
-              </v-row>
-              <v-row>
-                <!-- Calendar -->
-                <div class="d-flex d-sm-none mt-1">
-                  <v-icon x-small>
-                    calendar_today
-                  </v-icon>
-                  <span class="caption">
-                    {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
-                  </span>
-                  <span v-if="!paper.isNew" class="caption">
-                    (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
-                  </span>
-                </div>
-              </v-row>
-            </div>
-          </v-card-text>
-        </v-card>
+                  <!-- Categories -->
+                  <v-chip
+                    v-for="(category, k) in paper.categories"
+                    :key="k"
+                    small
+                    label
+                    class="mr-1 mb-1"
+                    color="grey lighten-2"
+                    text-color="grey darken-2"
+                  >
+                    {{ category.$.term }}
+                  </v-chip>
+                  <v-spacer />
+                  <!-- Calendar -->
+                  <div class="hidden-xs-only">
+                    <v-icon x-small>
+                      calendar_today
+                    </v-icon>
+                    <span class="caption">
+                      {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                    </span>
+                    <span v-if="!paper.isNew" class="caption">
+                      (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                    </span>
+                  </div>
+                </v-row>
+                <v-row>
+                  <!-- Calendar -->
+                  <div class="d-flex d-sm-none mt-1">
+                    <v-icon x-small>
+                      calendar_today
+                    </v-icon>
+                    <span class="caption">
+                      {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                    </span>
+                    <span v-if="!paper.isNew" class="caption">
+                      (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                    </span>
+                  </div>
+                </v-row>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-hover>
       </v-col>
     </v-row>
     <!-- Dialog -->
