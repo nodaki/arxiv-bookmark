@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-row justify="space-between">
-        <v-col lg="10" md="10" sm="10">
+        <v-col>
           <v-autocomplete
             v-model="selectedCats"
             :items="allCategories"
@@ -16,7 +16,6 @@
             full-width
             label="Search by category"
             prepend-inner-icon="search"
-            color="grey"
           >
             <template v-slot:selection="data">
               <v-chip
@@ -55,11 +54,6 @@
             </template>
           </v-autocomplete>
         </v-col>
-        <v-col lg="2" md="2" sm="2" class="mt-1">
-          <v-btn icon color="blue" @click="search">
-            <v-icon>search</v-icon>
-          </v-btn>
-        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -93,6 +87,14 @@ export default {
       categories: state => state.categories
     })
   },
+  watch: {
+    selectedCats (val) {
+      if (val.length) {
+        this.setCategories(val)
+        this.setInfiniteLoadingFlag(true)
+      }
+    }
+  },
   methods: {
     ...mapMutations([
       'setCategories',
@@ -101,10 +103,6 @@ export default {
     remove (item) {
       const index = this.selectedCats.indexOf(item.name)
       if (index >= 0) { this.selectedCats.splice(index, 1) }
-    },
-    search () {
-      this.setCategories(this.selectedCats)
-      this.setInfiniteLoadingFlag(true)
     }
   }
 }
