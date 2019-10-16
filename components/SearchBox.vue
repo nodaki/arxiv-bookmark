@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row justify="space-between">
         <v-col>
-          <v-autocomplete
+          <v-select
             v-model="selectedCats"
             :items="allCategories"
             item-text="name"
@@ -19,7 +19,7 @@
           >
             <template v-slot:selection="data">
               <v-chip
-                v-if="data.index < 2"
+                v-if="data.index === 0"
                 v-bind="data.attrs"
                 :input-value="data.selected"
                 close
@@ -34,8 +34,8 @@
                 <span>{{ data.item.name }}</span>
               </v-chip>
               <!-- Change selection appearance if more than 2 categories are selected -->
-              <span v-if="data.index === 2" class="grey-text caption">
-                (+{{ selectedCats.length - 2 }} others)
+              <span v-if="data.index === 1" class="grey-text caption">
+                (+{{ selectedCats.length - 1 }})
               </span>
             </template>
             <template v-slot:item="data">
@@ -52,7 +52,7 @@
                 </v-list-item-content>
               </template>
             </template>
-          </v-autocomplete>
+          </v-select>
         </v-col>
       </v-row>
     </v-container>
