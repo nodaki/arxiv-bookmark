@@ -9,6 +9,8 @@ pytest = "*"
 [packages]
 fastapi = "*"
 uvicorn = "*"
+feedparser = "*"
+arxiv = "*"
 
 [requires]
 python_version = "3.7"
