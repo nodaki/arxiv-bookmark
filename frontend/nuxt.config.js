@@ -47,13 +47,24 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/proxy'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    prefix: '/api',
+    proxy: true
+  },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8000',
+      pathRewrite: {
+        '^/api': '/'
+      }
+    }
   },
   /*
   ** vuetify module configuration

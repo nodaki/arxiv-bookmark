@@ -3,8 +3,8 @@
     <v-row v-for="(paper, i) in papers" :key="i">
       <v-col>
         <v-hover v-slot:default="{ hover }">
-          <v-card :elevation="hover ? 10 : 2" :ripple="false" @click="openDialog(paper)">
-            <v-card-title class="mb-2" @click="openDialog(paper)">
+          <v-card :elevation="hover ? 5 : 2" :ripple="false" @click="openDialog(paper)">
+            <v-card-title class="mb-2">
               {{ paper.title }}
             </v-card-title>
             <v-card-text>
@@ -14,7 +14,7 @@
                   <v-icon left small>
                     mdi-account-circle-outline
                   </v-icon>
-                  {{ paper.authors[0].name[0] }}
+                  {{ paper.authors[0] }}
                 </v-chip>
                 <v-chip
                   v-for="(author, j) in paper.authors.slice(1)"
@@ -28,18 +28,18 @@
                   <v-icon left small>
                     mdi-account-circle-outline
                   </v-icon>
-                  {{ author.name[0] }}
+                  {{ author }}
                 </v-chip>
               </div>
               <!-- Summary -->
-              <v-clamp class="body mt-2" autoresize :max-lines="clampMaxLines">
+              <v-clamp :max-lines="clampMaxLines" class="body mt-2" autoresize>
                 {{ paper.summary }}
               </v-clamp>
               <div class="mt-4 ml-3 mr-3">
                 <v-row class="mt-1">
                   <!-- New or update -->
                   <span class="font-weight-bold mr-1 mb-1">
-                    <v-chip v-if="paper.isNew" label color="teal lighten-1" text-color="white" small>
+                    <v-chip v-if="paper.is_new" label color="teal lighten-1" text-color="white" small>
                       New
                     </v-chip>
                     <v-chip v-else label color="teal lighten-3" text-color="white" small>
@@ -56,14 +56,13 @@
                       text-color="white"
                       small
                       class="mr-1 mb-1"
-                      @click="setComment(conference)"
                     >
                       {{ conference }}
                     </v-chip>
                   </span>
                   <!-- Categories -->
                   <v-chip
-                    v-for="(category, k) in paper.categories"
+                    v-for="(category, k) in paper.tags"
                     :key="k"
                     small
                     label
@@ -71,7 +70,7 @@
                     color="grey lighten-2"
                     text-color="grey darken-2"
                   >
-                    {{ category.$.term }}
+                    {{ category }}
                   </v-chip>
                   <v-spacer />
                   <!-- Calendar -->
@@ -80,10 +79,10 @@
                       calendar_today
                     </v-icon>
                     <span class="caption">
-                      {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                      {{ parseDate(paper.updated) }}
                     </span>
-                    <span v-if="!paper.isNew" class="caption">
-                      (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                    <span v-if="!paper.is_new" class="caption">
+                      (v1: {{ parseDate(paper.published) }})
                     </span>
                   </div>
                 </v-row>
@@ -94,10 +93,10 @@
                       calendar_today
                     </v-icon>
                     <span class="caption">
-                      {{ paper.updated.year }}/{{ paper.updated.month }}/{{ paper.updated.day }}
+                      {{ parseDate(paper.updated) }}
                     </span>
-                    <span v-if="!paper.isNew" class="caption">
-                      (v1: {{ paper.published.year }}/{{ paper.published.month }}/{{ paper.published.day }})
+                    <span v-if="!paper.is_new" class="caption">
+                      (v1: {{ parseDate(paper.published) }})
                     </span>
                   </div>
                 </v-row>
@@ -131,7 +130,7 @@
                   <v-icon left x-small>
                     mdi-account-circle-outline
                   </v-icon>
-                  {{ author.name[0] }}
+                  {{ author }}
                 </v-chip>
               </div>
               <div class="pb-2">
@@ -140,10 +139,10 @@
                   calendar_today
                 </v-icon>
                 <span class="caption">
-                  {{ dialogContent.updated.year }}/{{ dialogContent.updated.month }}/{{ dialogContent.updated.day }}
+                  {{ parseDate(dialogContent.updated) }}
                 </span>
-                <span v-if="!dialogContent.isNew" class="caption">
-                  (v1: {{ dialogContent.published.year }}/{{ dialogContent.published.month }}/{{ dialogContent.published.day }})
+                <span v-if="!dialogContent.is_new" class="caption">
+                  (v1: {{ parseDate(dialogContent.published) }})
                 </span>
               </div>
               <!-- Abstract -->
@@ -156,17 +155,17 @@
               </div>
               <!-- Comment -->
               <div class="caption pt-2">
-                Comment: {{ dialogContent.comment }}
+                Comment: {{ dialogContent.arxiv_comment }}
               </div>
             </v-card-text>
             <v-divider />
             <!-- Actions -->
             <v-card-actions>
               <div class="flex-grow-1" />
-              <v-btn color="primary" text @click="dialog = false">
+              <v-btn @click="dialog = false" color="primary" text>
                 Close
               </v-btn>
-              <v-btn color="primary" :href="dialogContent.pdf" target="_blank">
+              <v-btn :href="dialogContent.pdf_url" color="primary" target="_blank">
                 Full Text
               </v-btn>
             </v-card-actions>
@@ -176,13 +175,12 @@
     </v-row>
     <!-- Infinite Loading -->
     <div>
-      <infinite-loading ref="infiniteLoading" spinner="spiral" @infinite="infiniteHandler" />
+      <infinite-loading @infinite="infiniteHandler" spinner="spiral" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations, mapGetters } from 'vuex'
 import VClamp from 'vue-clamp'
 export default {
   components: {
@@ -190,155 +188,35 @@ export default {
   },
   data () {
     return {
-      clampMaxLines: 3,
+      papers: [],
       maxResults: 10,
-      initCat: ['cs.CV'],
-      comment: '',
-      baseUrl: 'https://export.arxiv.org/api/query?sortBy=lastUpdatedDate&sortOrder=descending&search_query=',
+      start: 0,
+      clampMaxLines: 3,
       dialog: false,
-      dialogContent: { title: '', summary: '', pdf: '', authors: [], comment: '', published: '', updated: '', isNew: null }
+      dialogContent: {}
     }
-  },
-  computed: {
-    ...mapState({
-      papers: state => state.papers,
-      page: state => state.page,
-      categories: state => state.categories
-    }),
-    ...mapGetters([
-      'getResetInfiniteLoadingFlag'
-    ])
-  },
-  watch: {
-    getResetInfiniteLoadingFlag (val) {
-      if (val) {
-        this.resetInfiniteLoading()
-        this.setInfiniteLoadingFlag(false)
-      }
-    }
-  },
-  mounted () {
-    this.setCategories(this.initCat)
   },
   methods: {
-    ...mapMutations([
-      'setCategories',
-      'addCategory',
-      'addPapers',
-      'incrementPage',
-      'resetPapers',
-      'resetPage',
-      'setInfiniteLoadingFlag'
-    ]),
-    async asyncGetPapers (url) {
-      const Parser = require('rss-parser')
-      const options = {
-        customFields: {
-          item: [
-            ['published', 'published'],
-            ['updated', 'updated'],
-            ['summary', 'summary'],
-            ['author', 'authors', { keepArray: true }],
-            ['category', 'categories', { keepArray: true }],
-            ['arxiv:comment', 'comment']
-          ]
-        }
-      }
-      const parser = new Parser(options)
-      const papers = []
-      const parseDate = (date) => {
-        return {
-          year: date.getUTCFullYear(),
-          month: date.getUTCMonth() + 1,
-          day: date.getUTCDate()
-        }
-      }
-      const feed = await parser.parseURL(url)
-      feed.items.forEach(function (entry) {
-        const pubDate = new Date(entry.published)
-        const updatedDate = new Date(entry.updated)
-        // Check whether new or update
-        const isNew = entry.published === entry.updated
-        let comment
-        if (entry.comment) {
-          comment = entry.comment._
-        } else {
-          comment = ''
-        }
-        // Get conference info from comment.
-        const searchConferences = ['CVPR', 'ICCV', 'ACCV', 'ECCV', 'NIPS', 'NeurIPS', 'SIGGRAPH', 'AAAI', 'ICML', 'IJCAI']
-        const conferences = []
-        searchConferences.forEach(function (conference) {
-          if (comment.includes(conference)) {
-            conferences.push(conference)
-          }
+    // Infinite loading
+    infiniteHandler ($state) {
+      // Get papers.
+      this.$axios.$get('/api/v1/papers', { params: { start: this.start, max_results: this.max_results } })
+        .then((res) => {
+          this.papers.push(...res)
+          this.start += this.maxResults
+          $state.loaded()
         })
-        papers.push({
-          title: entry.title,
-          link: entry.link,
-          pdf: `https://arxiv.org/pdf/${entry.link.split('/')[4]}.pdf`,
-          id: entry.id,
-          published: parseDate(pubDate),
-          updated: parseDate(updatedDate),
-          summary: entry.summary,
-          authors: entry.authors,
-          categories: entry.categories,
-          comment,
-          conferences,
-          isNew
+        .catch((e) => {
+          $state.complete()
         })
-      })
-      return papers
     },
-    async infiniteHandler ($state) {
-      // Infinite loading
-      if (this.loading) { return }
-      try {
-        this.loading = false
-        const start = `&start=${this.page * this.maxResults}`
-        const andOperator = '+AND+'
-        // Categories
-        const cat = []
-        this.categories.forEach(function (category) {
-          cat.push(`cat:${category}`)
-        })
-        const searchCat = cat.join('+OR+')
-        let searchQuery
-        if (this.comment) {
-          searchQuery = searchCat + andOperator + `co:${this.comment}`
-        } else {
-          searchQuery = searchCat
-        }
-        const url = this.baseUrl + searchQuery + start + `&max_results=${this.maxResults}`
-        const papers = await this.asyncGetPapers(url)
-        this.addPapers(papers)
-        this.incrementPage()
-        $state.loaded()
-      } catch (e) {
-        $state.complete()
-      } finally {
-        this.loading = false
-      }
-    },
-    resetInfiniteLoading () {
-      this.resetPapers()
-      this.resetPage()
-      // Reset infinite loading
-      this.$refs.infiniteLoading.stateChanger.reset()
-    },
-    setComment (comment) {
-      this.comment = comment
-      this.resetInfiniteLoading()
+    // Parse datetime
+    parseDate (date) {
+      const d = new Date(date)
+      return `${d.getUTCFullYear()}/${d.getUTCMonth() + 1}/${d.getUTCDay()}`
     },
     openDialog (paper) {
-      this.dialogContent.title = paper.title
-      this.dialogContent.summary = paper.summary
-      this.dialogContent.pdf = paper.pdf
-      this.dialogContent.authors = paper.authors
-      this.dialogContent.comment = paper.comment
-      this.dialogContent.published = paper.published
-      this.dialogContent.updated = paper.updated
-      this.dialogContent.isNew = paper.isNew
+      this.dialogContent = paper
       this.dialog = true
       // Set scroll top to 0
       this.$nextTick(() => {
@@ -349,3 +227,6 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+</style>
