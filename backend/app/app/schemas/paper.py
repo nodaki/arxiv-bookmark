@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from pydantic import BaseModel
@@ -7,8 +6,7 @@ from pydantic import BaseModel
 class PaperBase(BaseModel):
     arxiv_id: str
     title: str
-    published: datetime
-    updated: datetime
+    is_new: bool
     summary: str
     arxiv_url: str
     pdf_url: str
@@ -20,5 +18,8 @@ class PaperBase(BaseModel):
 
 
 class Paper(PaperBase):
+    published: str
+    updated: str
     authors: List[str]
+    conferences: List[str]
     tags: List[str]
