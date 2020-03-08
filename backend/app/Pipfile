@@ -11,6 +11,9 @@ fastapi = "*"
 uvicorn = "*"
 feedparser = "*"
 arxiv = "*"
+alembic = "*"
+passlib = {extras = ["bcrypt"],version = "*"}
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
