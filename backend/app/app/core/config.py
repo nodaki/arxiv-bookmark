@@ -19,3 +19,7 @@ else:
 
 # a string of origins separated by commas, e.g: "http://localhost, http://localhost:4200, http://localhost:3000 "
 BACKEND_CORS_ORIGINS = os.getenv("BACKEND_CORS_ORIGINS")
+
+FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER")
+FIRST_SUPERUSER_EMAIL = os.getenv("FIRST_SUPERUSER_EMAIL")
+FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD")

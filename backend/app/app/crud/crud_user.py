@@ -17,6 +17,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
                 email=obj_in.email,
                 hashed_password=get_password_hash(obj_in.password),
                 name=obj_in.name,
+                is_superuser=obj_in.is_superuser
         )
         db_session.add(db_obj)
         db_session.commit()
