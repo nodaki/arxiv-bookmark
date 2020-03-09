@@ -4,6 +4,8 @@ API_V1_STR = "/api/v1"
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
 
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 8  # 60 minutes * 24 hours * 8 days = 8 days
+
 CONFERENCE_LIST = {"CVPR", "ICCV", "ACCV", "ECCV", "NIPS", "NEURIPS", "SIGGRAPH", "AAAI", "ICML", "IJCAI"}
 
 DB_DRIVER = os.getenv("DB_DRIVER")
