@@ -36,7 +36,7 @@ def get_url():
     port = os.getenv("DB_PORT")
     db = os.getenv("DB_NAME")
     if driver == "sqlite":
-        sqlalchemy_url = f"{driver}:///{db}"
+        sqlalchemy_url = f"{driver}:///app/{db}"
     else:
         sqlalchemy_url = f"{driver}://{user}:{password}@{server}:{port}/{db}"
     print(sqlalchemy_url)
