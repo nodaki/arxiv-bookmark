@@ -1,5 +1,14 @@
 import os
 
+
+def getenv_boolean(var_name, default_value=False):
+    result = default_value
+    env_value = os.getenv(var_name)
+    if env_value is not None:
+        result = env_value.upper() in ("TRUE", "1")
+    return result
+
+
 API_V1_STR = "/api/v1"
 
 SECRET_KEY = os.getenvb(b"SECRET_KEY")
@@ -25,3 +34,5 @@ BACKEND_CORS_ORIGINS = os.getenv("BACKEND_CORS_ORIGINS")
 FIRST_SUPERUSER = os.getenv("FIRST_SUPERUSER")
 FIRST_SUPERUSER_EMAIL = os.getenv("FIRST_SUPERUSER_EMAIL")
 FIRST_SUPERUSER_PASSWORD = os.getenv("FIRST_SUPERUSER_PASSWORD")
+
+USERS_OPEN_REGISTRATION = getenv_boolean("USERS_OPEN_REGISTRATION")
