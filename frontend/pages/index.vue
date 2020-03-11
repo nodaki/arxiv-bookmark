@@ -162,7 +162,7 @@
             <!-- Actions -->
             <v-card-actions>
               <div class="flex-grow-1" />
-              <v-btn @click="dialog = false" color="primary" text>
+              <v-btn color="primary" text @click="dialog = false">
                 Close
               </v-btn>
               <v-btn :href="dialogContent.pdf_url" color="primary" target="_blank">
@@ -175,7 +175,7 @@
     </v-row>
     <!-- Infinite Loading -->
     <div>
-      <infinite-loading @infinite="infiniteHandler" spinner="spiral" />
+      <infinite-loading spinner="spiral" @infinite="infiniteHandler" />
     </div>
   </div>
 </template>
@@ -186,6 +186,7 @@ export default {
   components: {
     VClamp
   },
+  middleware: 'auth',
   data () {
     return {
       papers: [],

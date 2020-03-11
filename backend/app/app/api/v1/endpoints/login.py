@@ -27,7 +27,7 @@ def login_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordR
     elif not crud.user.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {"access_token": create_access_token(data={"user_id": user.id}, expires_delta=access_token_expires),
+    return {"token": create_access_token(data={"user_id": user.id}, expires_delta=access_token_expires),
             "token_type": "bearer"
             }
 

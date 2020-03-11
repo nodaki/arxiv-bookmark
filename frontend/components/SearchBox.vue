@@ -22,9 +22,9 @@
                 v-if="data.index === 0"
                 v-bind="data.attrs"
                 :input-value="data.selected"
+                close
                 @click="data.select"
                 @click:close="remove(data.item)"
-                close
               >
                 <v-avatar left>
                   <v-icon small>

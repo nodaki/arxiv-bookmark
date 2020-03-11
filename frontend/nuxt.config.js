@@ -48,7 +48,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    '@nuxtjs/auth'
   ],
   /*
   ** Axios module configuration
@@ -63,6 +64,28 @@ export default {
       target: 'http://localhost:8000',
       pathRewrite: {
         '^/api': '/'
+      }
+    }
+  },
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: false,
+      home: '/'
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            url: '/api/v1/login/access-token',
+            method: 'post',
+            propertyName: 'token'
+          },
+          user: { url: '/api/v1/users/me', method: 'get', propertyName: false },
+          logout: false
+        }
       }
     }
   },

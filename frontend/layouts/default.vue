@@ -28,8 +28,8 @@
       fixed
       app
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="d-none d-sm-flex" />
-      <v-toolbar-title v-text="title" class="d-none d-sm-flex" />
+      <v-app-bar-nav-icon class="d-none d-sm-flex" @click.stop="drawer = !drawer" />
+      <v-toolbar-title class="d-none d-sm-flex" v-text="title" />
       <v-spacer class="d-none d-sm-flex" />
       <search-box style="width: 20vw; min-width: 300px" />
     </v-app-bar>
