@@ -186,7 +186,6 @@ export default {
   components: {
     VClamp
   },
-  middleware: 'auth',
   data () {
     return {
       papers: [],
