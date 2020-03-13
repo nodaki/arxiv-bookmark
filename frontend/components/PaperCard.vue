@@ -119,7 +119,7 @@ export default {
     // Parse datetime
     parseDate (date) {
       const d = new Date(date)
-      return `${d.getUTCMonth() + 1}/${d.getUTCDay()}/${d.getUTCFullYear()}`
+      return `${d.getUTCMonth() + 1}/${d.getUTCDate()}/${d.getUTCFullYear()}`
     },
     makeCalender (paper) {
       if (!paper.is_new) {
