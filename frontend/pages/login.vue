@@ -53,6 +53,7 @@
 <script>
 export default {
   name: 'Login',
+  layout: 'auth',
   middleware ({ store, redirect }) {
     if (store.$auth.loggedIn) {
       redirect('/')
