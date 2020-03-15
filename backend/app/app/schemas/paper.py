@@ -1,4 +1,5 @@
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -11,10 +12,27 @@ class PaperBase(BaseModel):
     arxiv_url: str
     pdf_url: str
     arxiv_primary_category: str
-    arxiv_comment: str = None
-    affiliation: str = None
-    journal_reference: str = None
-    doi: str = None
+    arxiv_comment: Optional[str] = None
+    affiliation: Optional[str] = None
+    journal_reference: Optional[str] = None
+    doi: Optional[str] = None
+
+
+class PaperBaseInDB(PaperBase):
+    id: int
+    published: datetime
+    updated: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class PaperCreate(PaperBaseInDB):
+    pass
+
+
+class PaperUpdate(PaperBaseInDB):
+    pass
 
 
 class Paper(PaperBase):
