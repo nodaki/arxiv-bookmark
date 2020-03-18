@@ -17,6 +17,9 @@ sqlalchemy = "*"
 pyjwt = "*"
 python-multipart = "*"
 pydantic = {extras = ["email"],version = "*"}
+celery = "*"
+pymysql = "*"
+mysqlclient = "*"
 
 [requires]
 python_version = "3.7"

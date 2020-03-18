@@ -19,7 +19,7 @@ class PaperBase(BaseModel):
 
 
 class PaperBaseInDB(PaperBase):
-    id: int
+    id: int = None
     published: datetime
     updated: datetime
 
