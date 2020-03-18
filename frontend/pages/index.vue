@@ -21,18 +21,18 @@ export default {
   data () {
     return {
       papers: [],
-      maxResults: 10,
-      start: 0
+      limit: 10,
+      skip: 0
     }
   },
   methods: {
     // Infinite loading
     infiniteHandler ($state) {
       // Get papers.
-      this.$axios.$get('/api/v1/papers', { params: { start: this.start, max_results: this.max_results } })
+      this.$axios.$get('/api/v1/papers', { params: { skip: this.skip, limit: this.limit } })
         .then((res) => {
           this.papers.push(...res)
-          this.start += this.maxResults
+          this.skip += this.limit
           $state.loaded()
         })
         .catch((e) => {

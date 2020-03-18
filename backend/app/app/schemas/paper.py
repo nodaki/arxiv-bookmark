@@ -38,6 +38,9 @@ class PaperUpdate(PaperBaseInDB):
 class Paper(PaperBase):
     published: str
     updated: str
-    authors: List[str]
-    conferences: List[str]
-    tags: List[str]
+    authors: Optional[List[str]] = None
+    conferences: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+
+    class Config:
+        orm_mode = True
