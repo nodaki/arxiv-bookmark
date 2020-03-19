@@ -22,9 +22,22 @@ def read_papers(
     papers_in_db = crud.paper.get_multi(db, skip=skip, limit=limit)
     papers = []
     for paper_in_db in papers_in_db:
-        setattr(paper_in_db, "published", paper_in_db.published.isoformat())
-        setattr(paper_in_db, "updated", paper_in_db.updated.isoformat())
-        setattr(paper_in_db, "authors", ["author1", "author2"])
-        setattr(paper_in_db, "tags", [paper_in_db.arxiv_primary_category])
-        papers.append(Paper.from_orm(paper_in_db))
+        paper = Paper(
+                arxiv_id=paper_in_db.arxiv_id,
+                title=paper_in_db.title,
+                is_new=paper_in_db.is_new,
+                summary=paper_in_db.summary,
+                arxiv_url=paper_in_db.arxiv_url,
+                pdf_url=paper_in_db.pdf_url,
+                arxiv_primary_category=paper_in_db.arxiv_primary_category,
+                arxiv_comment=paper_in_db.arxiv_comment,
+                affiliation=paper_in_db.affiliation,
+                journal_reference=paper_in_db.journal_reference,
+                doi=paper_in_db.doi,
+                published=paper_in_db.published.isoformat(),
+                updated=paper_in_db.updated.isoformat(),
+                authors=[author.name for author in paper_in_db.authors],
+                tags=[paper_in_db.arxiv_primary_category]
+        )
+        papers.append(paper)
     return papers

@@ -16,7 +16,8 @@ class CRUDPaper(CRUDBase):
         return db_session.query(Paper).filter(Paper.arxiv_id == arxiv_id).first()
 
     def get_multi(self, db_session: Session, *, skip=0, limit=10) -> List[Paper]:
-        return db_session.query(Paper).order_by(desc(Paper.updated)).offset(skip).limit(limit).all()
+        return db_session.query(Paper).order_by(desc(Paper.updated)) \
+            .offset(skip).limit(limit).from_self().join(Paper, Author.papers).all()
 
     def create(self, db_session: Session, *, obj_in: PaperCreate) -> Paper:
         obj_in_data = PaperInDB(**jsonable_encoder(obj_in))
