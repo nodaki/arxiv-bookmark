@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app import crud
 from app.crud.base import CRUDBase
 from app.models.author import Author
+from app.models.conference import Conference
 from app.models.paper import Paper
 from app.models.tag import Tag
 from app.schemas.paper import PaperCreate, PaperInDB
@@ -34,6 +35,12 @@ class CRUDPaper(CRUDBase):
             if not tag:
                 tag = Tag(name=tag_name)
             db_obj.tags.append(tag)
+        # Relation with conferences
+        for conference_name in obj_in.conferences:
+            conference = crud.conference.get_by_name(db_session=db_session, name=conference_name)
+            if not conference:
+                conference = Conference(name=conference_name)
+            db_obj.conferences.append(conference)
         db_session.add(db_obj)
         db_session.commit()
         db_session.refresh(db_obj)

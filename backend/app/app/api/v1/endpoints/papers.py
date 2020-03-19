@@ -37,7 +37,8 @@ def read_papers(
                 published=paper_in_db.published.isoformat(),
                 updated=paper_in_db.updated.isoformat(),
                 authors=[author.name for author in paper_in_db.authors],
-                tags=[tag.name for tag in paper_in_db.tags]
+                tags=[tag.name for tag in paper_in_db.tags],
+                conferences=[conference.name for conference in paper_in_db.conferences]
         )
         papers.append(paper)
     return papers

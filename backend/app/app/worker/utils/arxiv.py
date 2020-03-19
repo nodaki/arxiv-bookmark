@@ -3,6 +3,7 @@ from typing import List
 
 import feedparser
 
+from app.core import config
 from app.schemas.paper import PaperCreate
 
 
@@ -53,5 +54,11 @@ def search(categories: List[str],
         entry["is_new"] = entry["published"] == entry["updated"]
         entry["published"] = datetime(*entry.pop("published_parsed")[:6])
         entry["updated"] = datetime(*entry.pop("updated_parsed")[:6])
+        conferences = []
+        if entry["arxiv_comment"]:
+            for conference in config.CONFERENCE_LIST:
+                if conference in entry["arxiv_comment"].upper():
+                    conferences.append(conference)
+        entry["conferences"] = conferences
         papers.append(PaperCreate(**entry))
     return papers
