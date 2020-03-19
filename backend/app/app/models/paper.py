@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
 from app.models.paper_author_link import PaperAuthorLink
+from app.models.paper_tag_link import PaperTagLink
 
 
 class Paper(Base):
@@ -22,3 +23,4 @@ class Paper(Base):
     doi = Column(String(127))
 
     authors = relationship("Author", secondary=PaperAuthorLink.__tablename__, back_populates="papers")
+    tags = relationship("Tag", secondary=PaperTagLink.__tablename__, back_populates="papers")

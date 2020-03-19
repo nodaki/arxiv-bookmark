@@ -4,4 +4,6 @@ from app.db.base_class import Base  # noqa
 from app.models.user import User  # noqa
 from app.models.author import Author
 from app.models.paper import Paper
+from app.models.tag import Tag
 from app.models.paper_author_link import PaperAuthorLink
+from app.models.paper_tag_link import PaperTagLink
