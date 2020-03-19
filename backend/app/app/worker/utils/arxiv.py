@@ -35,7 +35,7 @@ def search(categories: List[str],
         entry["summary"] = entry["summary"].replace("\n", "")
         entry["authors"] = [d["name"] for d in entry["authors"]]
         if "arxiv_comment" in entry:
-            entry["arxiv_comment"] = entry["arxiv_comment"].rstrip("\n")
+            entry["arxiv_comment"] = entry["arxiv_comment"].replace("\n", "")
         else:
             entry["arxiv_comment"] = None
         if "arxiv_journal_ref" in entry:
