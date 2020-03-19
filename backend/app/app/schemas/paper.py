@@ -30,6 +30,7 @@ class PaperBaseInDB(PaperBase):
 class PaperCreate(PaperBaseInDB):
     authors: Optional[List[str]] = None
     tags: Optional[List[str]] = None
+    conferences: Optional[List[str]] = None
 
 
 class PaperUpdate(PaperBaseInDB):

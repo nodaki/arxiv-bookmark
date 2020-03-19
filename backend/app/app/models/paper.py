@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 from app.models.paper_author_link import PaperAuthorLink
 from app.models.paper_tag_link import PaperTagLink
+from app.models.paper_conference_link import PaperConferenceLink
 
 
 class Paper(Base):
@@ -24,3 +25,4 @@ class Paper(Base):
 
     authors = relationship("Author", secondary=PaperAuthorLink.__tablename__, back_populates="papers")
     tags = relationship("Tag", secondary=PaperTagLink.__tablename__, back_populates="papers")
+    conferences = relationship("Conference", secondary=PaperConferenceLink.__tablename__, back_populates="papers")
