@@ -8,6 +8,7 @@ from app import crud
 from app.crud.base import CRUDBase
 from app.models.author import Author
 from app.models.paper import Paper
+from app.models.tag import Tag
 from app.schemas.paper import PaperCreate, PaperInDB
 
 
@@ -16,8 +17,7 @@ class CRUDPaper(CRUDBase):
         return db_session.query(Paper).filter(Paper.arxiv_id == arxiv_id).first()
 
     def get_multi(self, db_session: Session, *, skip=0, limit=10) -> List[Paper]:
-        return db_session.query(Paper).order_by(desc(Paper.updated)) \
-            .offset(skip).limit(limit).from_self().join(Paper, Author.papers).all()
+        return db_session.query(Paper).order_by(desc(Paper.updated)).offset(skip).limit(limit).all()
 
     def create(self, db_session: Session, *, obj_in: PaperCreate) -> Paper:
         obj_in_data = PaperInDB(**jsonable_encoder(obj_in))
@@ -28,6 +28,12 @@ class CRUDPaper(CRUDBase):
             if not author:
                 author = Author(name=author_name)
             db_obj.authors.append(author)
+        # Relation with tags
+        for tag_name in obj_in.tags:
+            tag = crud.tag.get_by_name(db_session=db_session, name=tag_name)
+            if not tag:
+                tag = Tag(name=tag_name)
+            db_obj.tags.append(tag)
         db_session.add(db_obj)
         db_session.commit()
         db_session.refresh(db_obj)
