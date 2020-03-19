@@ -1,6 +1,8 @@
 from sqlalchemy import Boolean, Column, Integer, String, TEXT, DATETIME
+from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
+from app.models.paper_author_link import PaperAuthorLink
 
 
 class Paper(Base):
@@ -18,3 +20,5 @@ class Paper(Base):
     affiliation = Column(String(127))
     journal_reference = Column(TEXT)
     doi = Column(String(127))
+
+    authors = relationship("Author", secondary=PaperAuthorLink.__tablename__, back_populates="papers")

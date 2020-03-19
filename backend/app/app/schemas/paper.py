@@ -28,7 +28,7 @@ class PaperBaseInDB(PaperBase):
 
 
 class PaperCreate(PaperBaseInDB):
-    pass
+    authors: Optional[List[str]] = None
 
 
 class PaperUpdate(PaperBaseInDB):
@@ -44,3 +44,7 @@ class Paper(PaperBase):
 
     class Config:
         orm_mode = True
+
+
+class PaperInDB(PaperBaseInDB):
+    pass
