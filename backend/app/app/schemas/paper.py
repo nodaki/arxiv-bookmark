@@ -50,6 +50,7 @@ class PaperUpdate(PaperBaseInDB):
 
 
 class Paper(PaperBase):
+    id: int
     published: str
     updated: str
     authors: Optional[List[str]] = None
