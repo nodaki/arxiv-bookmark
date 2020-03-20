@@ -4,13 +4,9 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
-from app import crud
 from app.crud.base import CRUDBase
-from app.models.author import Author
-from app.models.conference import Conference
 from app.models.paper import Paper
-from app.models.tag import Tag
-from app.schemas.paper import PaperCreate, PaperInDB
+from app.schemas.paper import PaperCreate, PaperUpdate, PaperInDB
 
 
 class CRUDPaper(CRUDBase):
@@ -23,24 +19,25 @@ class CRUDPaper(CRUDBase):
     def create(self, db_session: Session, *, obj_in: PaperCreate) -> Paper:
         obj_in_data = PaperInDB(**jsonable_encoder(obj_in))
         db_obj = self.model(**jsonable_encoder(obj_in_data))
-        # Relation with authors
-        for author_name in obj_in.authors:
-            author = crud.author.get_by_name(db_session=db_session, name=author_name)
-            if not author:
-                author = Author(name=author_name)
-            db_obj.authors.append(author)
-        # Relation with tags
-        for tag_name in obj_in.tags:
-            tag = crud.tag.get_by_name(db_session=db_session, name=tag_name)
-            if not tag:
-                tag = Tag(name=tag_name)
-            db_obj.tags.append(tag)
-        # Relation with conferences
-        for conference_name in obj_in.conferences:
-            conference = crud.conference.get_by_name(db_session=db_session, name=conference_name)
-            if not conference:
-                conference = Conference(name=conference_name)
-            db_obj.conferences.append(conference)
+        # Relation with authors, tags and conferences
+        db_obj.authors = obj_in.authors
+        db_obj.tags = obj_in.tags
+        db_obj.conferences = obj_in.conferences
+        db_session.add(db_obj)
+        db_session.commit()
+        db_session.refresh(db_obj)
+        return db_obj
+
+    def update(self, db_session: Session, *, db_obj: Paper, obj_in: PaperUpdate) -> Paper:
+        obj_data = jsonable_encoder(db_obj)
+        update_data = obj_in.dict(skip_defaults=True)
+        for field in obj_data:
+            if field in update_data:
+                setattr(db_obj, field, update_data[field])
+        # Relation with authors, tags and conferences
+        db_obj.authors = obj_in.authors
+        db_obj.tags = obj_in.tags
+        db_obj.conferences = obj_in.conferences
         db_session.add(db_obj)
         db_session.commit()
         db_session.refresh(db_obj)

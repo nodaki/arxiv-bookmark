@@ -3,6 +3,10 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from app.models.author import Author
+from app.models.conference import Conference
+from app.models.tag import Tag
+
 
 class PaperBase(BaseModel):
     arxiv_id: str
@@ -28,13 +32,21 @@ class PaperBaseInDB(PaperBase):
 
 
 class PaperCreate(PaperBaseInDB):
-    authors: Optional[List[str]] = None
-    tags: Optional[List[str]] = None
-    conferences: Optional[List[str]] = None
+    authors: Optional[List[Author]] = None
+    tags: Optional[List[Tag]] = None
+    conferences: Optional[List[Conference]] = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class PaperUpdate(PaperBaseInDB):
-    pass
+    authors: Optional[List[Author]] = None
+    tags: Optional[List[Tag]] = None
+    conferences: Optional[List[Conference]] = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class Paper(PaperBase):

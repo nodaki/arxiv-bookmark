@@ -24,7 +24,7 @@ def create_and_update_papers():
             base_date=base_date
     )
 
-    logger.info(f"Today's updated papers: {len(papers)}")
+    logger.info("Start creating and updating papers")
     for paper_in in papers:
         paper = crud.paper.get_by_arxiv_id(db_session=db_session, arxiv_id=paper_in.arxiv_id)
         if paper:
@@ -32,8 +32,11 @@ def create_and_update_papers():
                 continue
             else:
                 # Update the paper
-                setattr(paper_in, "id", paper.id)
-                crud.paper.update(db_session=db_session, db_obj=paper, obj_in=PaperUpdate(**paper_in.dict()))
+                crud.paper.update(
+                        db_session=db_session,
+                        db_obj=paper,
+                        obj_in=PaperUpdate(**paper_in.dict(skip_defaults=True))
+                )
                 logger.info(f"Update {paper.arxiv_id}")
         else:
             # Create the paper
