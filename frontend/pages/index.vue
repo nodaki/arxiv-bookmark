@@ -31,9 +31,13 @@ export default {
       // Get papers.
       this.$axios.$get('/api/v1/papers', { params: { skip: this.skip, limit: this.limit } })
         .then((res) => {
-          this.papers.push(...res)
-          this.skip += this.limit
-          $state.loaded()
+          if (res.length) {
+            this.papers.push(...res)
+            this.skip += this.limit
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
         })
         .catch((e) => {
           $state.complete()

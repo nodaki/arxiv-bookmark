@@ -2,7 +2,9 @@
   <div>
     <v-card outlined>
       <v-card-title class="font-weight-bold pb-1">
-        {{ paper.title }}
+        <nuxt-link :to="{name:'papers-id', params: {id:paper.id}}" target="_blank" class="link">
+          {{ paper.title }}
+        </nuxt-link>
       </v-card-title>
       <v-card-text class="pb-2">
         <!-- Authors -->
@@ -14,7 +16,7 @@
         <!-- calender -->
         <div>
           <span class="calender font-weight-light">
-            {{ makeCalender(paper) }}
+            {{ diffTimeFromNow(paper.updated) }}
           </span>
         </div>
         <!-- Summary -->
@@ -48,37 +50,38 @@
             </span>
             <!-- Categories -->
             <v-chip
-              v-for="(category, k) in paper.tags"
-              :key="k"
               small
               label
               class="mr-1 mb-1"
               color="grey lighten-2"
               text-color="grey darken-2"
             >
-              {{ category }}
+              {{ paper.arxiv_primary_category }}
             </v-chip>
             <v-spacer />
           </v-row>
         </div>
       </v-card-text>
       <v-divider class="mx-4" />
-      <v-card-actions class="py-1">
+      <v-card-actions class="py-2">
         <v-row justify="space-around">
-          <v-btn icon>
+          <v-btn text small style="color: dimgrey">
             <v-icon>
               mdi-bookmark-outline
             </v-icon>
+            Bookmark
           </v-btn>
-          <v-btn icon>
+          <v-btn text small style="color: dimgrey">
             <v-icon>
               mdi-comment-outline
             </v-icon>
+            Comment
           </v-btn>
-          <v-btn icon>
+          <v-btn text small style="color: dimgrey">
             <v-icon>
               mdi-share-outline
             </v-icon>
+            Share
           </v-btn>
         </v-row>
       </v-card-actions>
@@ -98,11 +101,13 @@ export default {
       type: Object,
       default () {
         return {
+          id: 0,
           title: '',
           authors: [],
           summary: '',
           conferences: [],
           tags: [],
+          arxiv_primary_category: '',
           published: '',
           updated: '',
           is_new: false
@@ -116,6 +121,38 @@ export default {
     }
   },
   methods: {
+    diffTimeFromNow (date) {
+      const now = new Date()
+      const src = new Date(date)
+      const diffTime = now.getTime() - src.getTime()
+      const diffHour = Math.floor(diffTime / (1000 * 60 * 60))
+      const diffDate = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+      const diffMonth = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30))
+      const diffYear = Math.floor(diffTime / (1000 * 60 * 60 * 365))
+      if (diffYear) {
+        if (diffYear === 1) {
+          return '1 YEAR AGO'
+        } else {
+          return `${diffYear} YEARS AGO`
+        }
+      } else if (diffMonth) {
+        if (diffMonth === 1) {
+          return '1 MONTH AGO'
+        } else {
+          return `${diffMonth} MONTHS AGO`
+        }
+      } else if (diffDate) {
+        if (diffDate === 1) {
+          return '1 DAY AGO'
+        } else {
+          return `${diffDate} DAYS AGO`
+        }
+      } else if (diffHour > 1) {
+        return `${diffHour} HOURS AGO`
+      } else {
+        return '1 HOURS AGO'
+      }
+    },
     // Parse datetime
     parseDate (date) {
       const d = new Date(date)
@@ -138,5 +175,13 @@ export default {
   }
   .calender {
     font-size: xx-small;
+  }
+  .link {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+  }
+  a:hover {
+    color: dimgrey;
   }
 </style>
