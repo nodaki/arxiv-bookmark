@@ -25,3 +25,9 @@ def read_papers(
     for paper_in_db in papers_in_db:
         papers.append(convert_paperindb_to_paper(paper_in_db))
     return papers
+
+
+@router.get("/{paper_id}", response_model=Paper)
+def read_paper_by_id(db: Session = Depends(get_db), paper_id: int = Path(default=1)):
+    paper_in_db = crud.paper.get(db_session=db, id=paper_id)
+    return convert_paperindb_to_paper(paper_in_db)
