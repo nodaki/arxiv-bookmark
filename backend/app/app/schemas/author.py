@@ -18,5 +18,5 @@ class AuthorCreate(AuthorBaseInDB):
     pass
 
 
-class Author(AuthorBase):
+class Author(AuthorBaseInDB):
     pass

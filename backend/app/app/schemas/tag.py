@@ -14,5 +14,5 @@ class TagBaseInDB(TagBase):
         orm_mode = True
 
 
-class Tag(TagBase):
+class Tag(TagBaseInDB):
     pass

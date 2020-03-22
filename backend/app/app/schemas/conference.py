@@ -14,7 +14,7 @@ class ConferenceBaseInDB(ConferenceBase):
         orm_mode = True
 
 
-class Conference(ConferenceBase):
+class Conference(ConferenceBaseInDB):
     pass
 
 

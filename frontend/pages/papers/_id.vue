@@ -10,7 +10,7 @@
             <!-- Authors -->
             <div>
               <span class="author font-weight-light body-2">
-                {{ paper.authors.join(', ') }}
+                {{ reformatObjects(paper.authors) }}
               </span>
             </div>
             <!-- Affiliation -->
@@ -31,7 +31,7 @@
             </div>
             <!-- category -->
             <div v-if="paper.tags" class="caption font-weight-light">
-              Tag: {{ paper.tags.join(', ') }}
+              Tag: {{ reformatObjects(paper.tags) }}
             </div>
             <!-- comment -->
             <div v-if="paper.arxiv_comment" class="caption font-weight-light">
@@ -105,6 +105,13 @@ export default {
     }
   },
   methods: {
+    reformatObjects (objects) {
+      const objectList = []
+      for (let i = 0; i < objects.length; i++) {
+        objectList.push(objects[i].name)
+      }
+      return objectList.join(', ')
+    },
     // Parse datetime
     parseDate (date) {
       const d = new Date(date)

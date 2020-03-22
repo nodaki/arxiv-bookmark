@@ -3,9 +3,12 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from app.models.author import Author
-from app.models.conference import Conference
-from app.models.tag import Tag
+from app.models.author import Author as DBAuthor
+from app.models.conference import Conference as DBConference
+from app.models.tag import Tag as DBTag
+from app.schemas.author import Author
+from app.schemas.conference import Conference
+from app.schemas.tag import Tag
 
 
 class PaperBase(BaseModel):
@@ -26,39 +29,29 @@ class PaperBaseInDB(PaperBase):
     id: int = None
     published: datetime
     updated: datetime
+    authors: Optional[List[DBAuthor]] = None
+    tags: Optional[List[DBTag]] = None
+    conferences: Optional[List[DBConference]] = None
 
     class Config:
         orm_mode = True
+        arbitrary_types_allowed = True
 
 
 class PaperCreate(PaperBaseInDB):
-    authors: Optional[List[Author]] = None
-    tags: Optional[List[Tag]] = None
-    conferences: Optional[List[Conference]] = None
-
-    class Config:
-        arbitrary_types_allowed = True
+    pass
 
 
 class PaperUpdate(PaperBaseInDB):
+    pass
+
+
+class Paper(PaperBaseInDB):
+    published: str = None
+    updated: str = None
     authors: Optional[List[Author]] = None
     tags: Optional[List[Tag]] = None
     conferences: Optional[List[Conference]] = None
-
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class Paper(PaperBase):
-    id: int
-    published: str
-    updated: str
-    authors: Optional[List[str]] = None
-    conferences: Optional[List[str]] = None
-    tags: Optional[List[str]] = None
-
-    class Config:
-        orm_mode = True
 
 
 class PaperInDB(PaperBaseInDB):

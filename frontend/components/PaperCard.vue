@@ -10,7 +10,7 @@
         <!-- Authors -->
         <div>
           <span class="author font-weight-light">
-            {{ paper.authors.join(', ') }}
+            {{ reformatAuthors(paper.authors) }}
           </span>
         </div>
         <!-- calender -->
@@ -45,7 +45,7 @@
                 small
                 class="mr-1 mb-1"
               >
-                {{ conference }}
+                {{ conference.name }}
               </v-chip>
             </span>
             <!-- Categories -->
@@ -121,6 +121,13 @@ export default {
     }
   },
   methods: {
+    reformatAuthors (authors) {
+      const authorsList = []
+      for (let i = 0; i < authors.length; i++) {
+        authorsList.push(authors[i].name)
+      }
+      return authorsList.join(', ')
+    },
     diffTimeFromNow (date) {
       const now = new Date()
       const src = new Date(date)
