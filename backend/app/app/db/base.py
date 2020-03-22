@@ -9,3 +9,4 @@ from app.models.conference import Conference
 from app.models.paper_author_link import PaperAuthorLink
 from app.models.paper_tag_link import PaperTagLink
 from app.models.paper_conference_link import PaperConferenceLink
+from app.models.bookmark import Bookmark
