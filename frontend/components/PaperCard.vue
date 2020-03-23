@@ -203,8 +203,8 @@ export default {
       }
     },
     isBookmarked () {
-      for (let i = 0; i < this.paper.bookmark_users.length; i++) {
-        if (this.paper.bookmark_users[i].id === this.$auth.user.id) {
+      for (let i = 0; i < this.paper.bookmarks.length; i++) {
+        if (this.paper.bookmarks[i].user_id === this.$auth.user.id) {
           return true
         }
       }

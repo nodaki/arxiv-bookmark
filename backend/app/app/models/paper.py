@@ -2,7 +2,6 @@ from sqlalchemy import Boolean, Column, Integer, String, TEXT, DATETIME
 from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
-from app.models.bookmark import Bookmark
 from app.models.paper_author_link import PaperAuthorLink
 from app.models.paper_conference_link import PaperConferenceLink
 from app.models.paper_tag_link import PaperTagLink
@@ -27,4 +26,4 @@ class Paper(Base):
     authors = relationship("Author", secondary=PaperAuthorLink.__tablename__, back_populates="papers")
     tags = relationship("Tag", secondary=PaperTagLink.__tablename__, back_populates="papers")
     conferences = relationship("Conference", secondary=PaperConferenceLink.__tablename__, back_populates="papers")
-    bookmark_users = relationship("User", secondary=Bookmark.__tablename__, back_populates="bookmark_papers")
+    bookmarks = relationship("Bookmark", back_populates="paper")

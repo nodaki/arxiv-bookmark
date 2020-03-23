@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from app.models.paper import Paper as DBPaper
+from app.models.bookmark import Bookmark as DBBookmark
 
 
 # Shared properties
@@ -15,7 +15,7 @@ class UserBase(BaseModel):
 
 class UserBaseInDB(UserBase):
     id: int = None
-    bookmark_papers: Optional[List[DBPaper]] = None
+    bookmarks: Optional[List[DBBookmark]] = None
 
     class Config:
         orm_mode = True
@@ -35,7 +35,7 @@ class UserUpdate(UserBaseInDB):
 
 # Additional properties to return via API
 class User(UserBaseInDB):
-    bookmark_papers: Optional[list] = None
+    bookmarks: Optional[list] = None
 
 
 # Additional properties stored in DB
