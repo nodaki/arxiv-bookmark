@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
+
+from app.models.paper import Paper as DBPaper
 
 
 # Shared properties
@@ -13,9 +15,11 @@ class UserBase(BaseModel):
 
 class UserBaseInDB(UserBase):
     id: int = None
+    bookmark_papers: Optional[List[DBPaper]] = None
 
     class Config:
         orm_mode = True
+        arbitrary_types_allowed = True
 
 
 # Properties to receive via API on creation
@@ -31,7 +35,7 @@ class UserUpdate(UserBaseInDB):
 
 # Additional properties to return via API
 class User(UserBaseInDB):
-    pass
+    bookmark_papers: Optional[list] = None
 
 
 # Additional properties stored in DB

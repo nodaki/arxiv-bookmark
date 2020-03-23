@@ -1,4 +1,5 @@
 from .crud_author import author
+from .crud_bookmark import bookmark
 from .crud_conference import conference
 from .crud_paper import paper
 from .crud_tag import tag

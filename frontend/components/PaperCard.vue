@@ -65,8 +65,11 @@
       <v-divider class="mx-4" />
       <v-card-actions class="py-2">
         <v-row justify="space-around">
-          <v-btn text small style="color: dimgrey">
-            <v-icon>
+          <v-btn text small style="color: dimgrey" @click="bookmark(paper.id)">
+            <v-icon v-if="isBookmarked()" style="color: crimson">
+              mdi-bookmark-check
+            </v-icon>
+            <v-icon v-else>
               mdi-bookmark-outline
             </v-icon>
             Bookmark
@@ -86,6 +89,16 @@
         </v-row>
       </v-card-actions>
     </v-card>
+    <v-alert
+      v-model="alert"
+      dense
+      outlined
+      type="warning"
+      dismissible
+      class="mt-2"
+    >
+      You must be signed in.
+    </v-alert>
   </div>
 </template>
 
@@ -97,7 +110,7 @@ export default {
     VClamp
   },
   props: {
-    paper: {
+    paperProps: {
       type: Object,
       default () {
         return {
@@ -110,14 +123,18 @@ export default {
           arxiv_primary_category: '',
           published: '',
           updated: '',
-          is_new: false
+          is_new: false,
+          bookmark_users: {}
         }
       }
     }
   },
   data () {
     return {
-      clampMaxLines: 6
+      paper: this.paperProps,
+      clampMaxLines: 6,
+      alert: false,
+      bookmarkIn: { paper_id: null, user_id: null }
     }
   },
   methods: {
@@ -170,6 +187,24 @@ export default {
         return this.parseDate(paper.updated) + ` (v1: ${this.parseDate(paper.published)})`
       } else {
         return this.parseDate(paper.updated)
+      }
+    },
+    async bookmark (paperId) {
+      if (this.$auth.loggedIn) {
+        this.bookmarkIn.paper_id = paperId
+        this.bookmarkIn.user_id = this.$auth.user.id
+        if (this.isBookmarked()) {
+          this.paper = await this.$axios.$delete('/api/v1/bookmarks', { data: this.bookmarkIn })
+        } else {
+          this.paper = await this.$axios.$post('/api/v1/bookmarks', this.bookmarkIn)
+        }
+      } else {
+        this.alert = true
+      }
+    },
+    isBookmarked () {
+      for (let i = 0; i < this.paper.bookmark_users.length; i++) {
+        return this.paper.bookmark_users[i].id === this.$auth.user.id
       }
     }
   }

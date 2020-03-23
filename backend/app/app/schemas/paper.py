@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from app.models.author import Author as DBAuthor
 from app.models.conference import Conference as DBConference
 from app.models.tag import Tag as DBTag
+from app.models.user import User as DBUser
 from app.schemas.author import Author
 from app.schemas.conference import Conference
 from app.schemas.tag import Tag
@@ -32,6 +33,7 @@ class PaperBaseInDB(PaperBase):
     authors: Optional[List[DBAuthor]] = None
     tags: Optional[List[DBTag]] = None
     conferences: Optional[List[DBConference]] = None
+    bookmark_users: Optional[List[DBUser]] = None
 
     class Config:
         orm_mode = True
@@ -52,6 +54,7 @@ class Paper(PaperBaseInDB):
     authors: Optional[List[Author]] = None
     tags: Optional[List[Tag]] = None
     conferences: Optional[List[Conference]] = None
+    bookmark_users: Optional[list] = None
 
 
 class PaperInDB(PaperBaseInDB):

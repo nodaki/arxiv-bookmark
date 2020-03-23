@@ -2,7 +2,7 @@
   <div>
     <v-row v-for="(paper, i) in papers" :key="i" align="center" justify="center">
       <v-col cols="12" sm="10" md="6">
-        <paper-card :paper="paper" />
+        <paper-card :paper-props="paper" />
       </v-col>
     </v-row>
     <!-- Infinite Loading -->
