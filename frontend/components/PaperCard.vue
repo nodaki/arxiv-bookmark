@@ -204,7 +204,9 @@ export default {
     },
     isBookmarked () {
       for (let i = 0; i < this.paper.bookmark_users.length; i++) {
-        return this.paper.bookmark_users[i].id === this.$auth.user.id
+        if (this.paper.bookmark_users[i].id === this.$auth.user.id) {
+          return true
+        }
       }
     }
   }
