@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from app import crud
 from app.api.utils.db import get_db
-from app.api.utils.papers import convert_paperindb_to_paper
 from app.schemas.paper import Paper
 
 router = APIRouter()
@@ -20,14 +19,9 @@ def read_papers(
     """
     Read papers.
     """
-    papers_in_db = crud.paper.get_multi(db, skip=skip, limit=limit)
-    papers = []
-    for paper_in_db in papers_in_db:
-        papers.append(convert_paperindb_to_paper(paper_in_db))
-    return papers
+    return crud.paper.get_multi(db, skip=skip, limit=limit)
 
 
 @router.get("/{paper_id}", response_model=Paper)
 def read_paper_by_id(db: Session = Depends(get_db), paper_id: int = Path(default=1)):
-    paper_in_db = crud.paper.get(db_session=db, id=paper_id)
-    return convert_paperindb_to_paper(paper_in_db)
+    return crud.paper.get(db_session=db, id=paper_id)

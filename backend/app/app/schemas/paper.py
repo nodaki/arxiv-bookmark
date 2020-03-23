@@ -49,8 +49,6 @@ class PaperUpdate(PaperBaseInDB):
 
 
 class Paper(PaperBaseInDB):
-    published: str = None
-    updated: str = None
     authors: Optional[List[Author]] = None
     tags: Optional[List[Tag]] = None
     conferences: Optional[List[Conference]] = None
