@@ -5,6 +5,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
+from app.models.bookmark import Bookmark
 from app.models.paper import Paper
 from app.schemas.paper import PaperCreate, PaperUpdate, PaperInDB
 
@@ -15,6 +16,13 @@ class CRUDPaper(CRUDBase):
 
     def get_multi(self, db_session: Session, *, skip=0, limit=10) -> List[Paper]:
         return db_session.query(Paper).order_by(desc(Paper.updated)).offset(skip).limit(limit).all()
+
+    def get_bookmarked_papers(self, db_session: Session, *, user_id: int):
+        return db_session.query(Paper) \
+            .join(Paper.bookmarks) \
+            .filter(Bookmark.user_id == user_id) \
+            .order_by(Bookmark.created_at.desc()) \
+            .all()
 
     def create(self, db_session: Session, *, obj_in: PaperCreate) -> Paper:
         obj_in_data = PaperInDB(**jsonable_encoder(obj_in))

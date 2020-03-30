@@ -203,9 +203,11 @@ export default {
       }
     },
     isBookmarked () {
-      for (let i = 0; i < this.paper.bookmarks.length; i++) {
-        if (this.paper.bookmarks[i].user_id === this.$auth.user.id) {
-          return true
+      if (this.$auth.loggedIn) {
+        for (let i = 0; i < this.paper.bookmarks.length; i++) {
+          if (this.paper.bookmarks[i].user_id === this.$auth.user.id) {
+            return true
+          }
         }
       }
     }

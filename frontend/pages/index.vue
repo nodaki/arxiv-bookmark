@@ -1,28 +1,51 @@
 <template>
   <div>
-    <v-row v-for="(paper, i) in papers" :key="i" align="center" justify="center">
+    <v-row align="start" justify="center">
       <v-col cols="12" sm="10" md="6">
-        <paper-card :paper-props="paper" />
+        <div v-for="(paper, i) in papers" :key="i">
+          <paper-card :paper-props="paper" class="pb-8" />
+        </div>
+        <!-- Infinite Loading -->
+        <div>
+          <infinite-loading spinner="spiral" @infinite="infiniteHandler" />
+        </div>
+      </v-col>
+      <v-col cols="12" md="3">
+        <bookmark-list :papers-props="bookmarks" style="position: fixed; width: 20vw" />
       </v-col>
     </v-row>
-    <!-- Infinite Loading -->
-    <div>
-      <infinite-loading spinner="spiral" @infinite="infiniteHandler" />
-    </div>
   </div>
 </template>
 
 <script>
 import PaperCard from '../components/PaperCard'
+import BookmarkList from '../components/index/BookmarkList'
 export default {
   components: {
-    PaperCard
+    PaperCard,
+    BookmarkList
+  },
+  async asyncData ({ $axios }) {
+    const papers = await $axios.$get('/api/v1/papers', { skip: 0, limit: 10 })
+    return { papers }
   },
   data () {
     return {
       papers: [],
       limit: 10,
-      skip: 0
+      skip: 10,
+      bookmarks: [],
+      tmp: []
+    }
+  },
+  mounted () {
+    if (this.$auth.loggedIn) {
+      this.$axios.$get('/api/v1/bookmarks/my-bookmarks')
+        .then((res) => {
+          this.bookmarks.push(...res)
+        })
+    } else {
+      this.tmp = []
     }
   },
   methods: {

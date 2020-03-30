@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
@@ -51,3 +52,12 @@ def remove_bookmark(
     bookmark = crud.bookmark.remove_bookmark(db, user_id=user_id, paper_id=paper_id)
     paper = crud.paper.get(db_session=db, id=bookmark.paper_id)
     return paper
+
+
+@router.get("/my-bookmarks", response_model=List[Paper])
+def get_my_bookmarks(
+        *,
+        db: Session = Depends(get_db),
+        current_user: DBUser = Depends(get_current_active_user)
+):
+    return crud.paper.get_bookmarked_papers(db, user_id=current_user.id)
