@@ -30,10 +30,6 @@ class PaperBaseInDB(PaperBase):
     id: int = None
     published: datetime
     updated: datetime
-    authors: Optional[List[DBAuthor]] = None
-    tags: Optional[List[DBTag]] = None
-    conferences: Optional[List[DBConference]] = None
-    bookmarks: Optional[List[DBBookmark]] = None
 
     class Config:
         orm_mode = True
@@ -41,11 +37,17 @@ class PaperBaseInDB(PaperBase):
 
 
 class PaperCreate(PaperBaseInDB):
-    pass
+    authors: Optional[List[DBAuthor]] = None
+    tags: Optional[List[DBTag]] = None
+    conferences: Optional[List[DBConference]] = None
+    bookmarks: Optional[List[DBBookmark]] = None
 
 
 class PaperUpdate(PaperBaseInDB):
-    pass
+    authors: Optional[List[DBAuthor]] = None
+    tags: Optional[List[DBTag]] = None
+    conferences: Optional[List[DBConference]] = None
+    bookmarks: Optional[List[DBBookmark]] = None
 
 
 class Paper(PaperBaseInDB):
