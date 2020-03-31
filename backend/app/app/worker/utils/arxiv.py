@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List, TypeVar, Generator
+from typing import List, TypeVar, Generator, Set
 
 import feedparser
 
@@ -17,7 +17,7 @@ CRUDType = TypeVar("CRUDType", bound=CRUDBase)
 ModelType = TypeVar("ModelType", bound=Base)
 
 
-def create_link_model(crud_base: CRUDType, model: ModelType, name_list: List[str]):
+def create_link_model(crud_base: CRUDType, model: ModelType, name_list: Set[str]):
     records = []
     for name in name_list:
         record = crud_base.get_by_name(db_session=db_session, name=name)
@@ -56,7 +56,7 @@ def search(categories: List[str],
             entry["arxiv_url"] = entry.pop("link")
             entry["title"] = entry["title"].replace("\n", "")
             entry["summary"] = entry["summary"].replace("\n", "")
-            entry["authors"] = create_link_model(crud.author, Author, [a["name"] for a in entry["authors"]])
+            entry["authors"] = create_link_model(crud.author, Author, {a["name"] for a in entry["authors"]})
             if "arxiv_comment" in entry:
                 entry["arxiv_comment"] = entry["arxiv_comment"].replace("\n", "")
             else:
@@ -72,14 +72,14 @@ def search(categories: List[str],
             entry["arxiv_id"] = entry.pop("id").split("/")[-1].split("v")[0]
             entry["arxiv_primary_category"] = entry["arxiv_primary_category"]["term"]
             entry["tags"] = create_link_model(crud.tag, Tag,
-                                              [t.term for t in entry["tags"] if t.term in config.CATEGORY_LIST])
+                                              {t.term for t in entry["tags"] if t.term in config.CATEGORY_LIST})
             entry["is_new"] = entry["published"] == entry["updated"]
             entry["published"] = datetime(*entry.pop("published_parsed")[:6])
             entry["updated"] = datetime(*entry.pop("updated_parsed")[:6])
-            conferences = []
+            conferences = set()
             if entry["arxiv_comment"]:
                 for conference in config.CONFERENCE_LIST:
                     if conference in entry["arxiv_comment"].upper():
-                        conferences.append(conference)
+                        conferences.add(conference)
             entry["conferences"] = create_link_model(crud.conference, Conference, conferences)
             yield PaperCreate(**entry)
