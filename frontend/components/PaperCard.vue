@@ -152,7 +152,7 @@ export default {
       const diffHour = Math.floor(diffTime / (1000 * 60 * 60))
       const diffDate = Math.floor(diffTime / (1000 * 60 * 60 * 24))
       const diffMonth = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30))
-      const diffYear = Math.floor(diffTime / (1000 * 60 * 60 * 365))
+      const diffYear = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 365))
       if (diffYear) {
         if (diffYear === 1) {
           return '1 YEAR AGO'
