@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row align="center" justify="center">
+    <v-row align="start" justify="center">
       <v-col cols="12" sm="10" md="6">
         <v-card outlined>
           <v-card-title class="font-weight-bold headline pb-1">
@@ -88,20 +88,37 @@
           </v-card-actions>
         </v-card>
       </v-col>
+      <v-col cols="12" md="3">
+        <bookmark-list :papers-props="bookmarks" style="position: fixed; width: 20vw" />
+      </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
+import BookmarkList from '../../components/index/BookmarkList'
+
 export default {
   name: 'Id',
+  components: {
+    BookmarkList
+  },
   async asyncData ({ $axios, params }) {
     const paper = await $axios.$get(`/api/v1/papers/${params.id}`)
     return { paper }
   },
   data () {
     return {
-      paper: {}
+      paper: {},
+      bookmarks: []
+    }
+  },
+  mounted () {
+    if (this.$auth.loggedIn) {
+      this.$axios.$get('/api/v1/bookmarks/my-bookmarks')
+        .then((res) => {
+          this.bookmarks.push(...res)
+        })
     }
   },
   methods: {
@@ -132,9 +149,11 @@ export default {
   .author {
     font-size: small;
   }
+
   .calender {
     font-size: xx-small;
   }
+
   .summary {
     color: black;
   }
