@@ -43,7 +43,7 @@ def create_and_update_papers():
             logger.info(f"Create {paper_in.arxiv_id}")
 
 
-@app.task(name="worker.papers.create_and_update_papers")
+@app.task(name="app.worker.papers.create_and_update_papers")
 def celery_create_and_update_papers():
     create_and_update_papers()
 

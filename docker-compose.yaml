@@ -17,3 +17,16 @@ services:
       - .env
     environment:
       PORT: 8000
+
+  queue:
+    image: rabbitmq:3
+
+  celeryworker:
+    build:
+      context: ./backend
+      dockerfile: celeryworker.dockerfile
+    depends_on:
+      - db
+      - queue
+    env_file:
+      - .env
