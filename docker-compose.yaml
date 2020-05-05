@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: backend.dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    env_file:
+      - .env
+    environment:
+      PORT: 8000

@@ -19,6 +19,7 @@ pydantic = {extras = ["email"],version = "*"}
 celery = "*"
 pymysql = "*"
 mysqlclient = "*"
+tenacity = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,4 +1,3 @@
-import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -29,17 +28,8 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    driver = os.getenv("DB_DRIVER")
-    user = os.getenv("DB_USER")
-    password = os.getenv("DB_PASSWORD")
-    server = os.getenv("DB_SERVER")
-    port = os.getenv("DB_PORT")
-    db = os.getenv("DB_NAME")
-    if driver == "sqlite":
-        sqlalchemy_url = f"{driver}:///app/{db}"
-    else:
-        sqlalchemy_url = f"{driver}://{user}:{password}@{server}:{port}/{db}"
-    print(sqlalchemy_url)
+    from app.core import config
+    sqlalchemy_url = config.SQLALCHEMY_DATABASE_URI
     return sqlalchemy_url
 
 
