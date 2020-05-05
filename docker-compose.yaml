@@ -17,6 +17,8 @@ services:
       - .env
     environment:
       PORT: 8000
+    volumes:
+      - mysql-db:/var/lib/mysql
 
   queue:
     image: rabbitmq:3
@@ -35,4 +37,7 @@ services:
     build:
       context: ./frontend
     ports:
-    - 3000:3000
+      - 3000:3000
+
+volumes:
+  mysql-db:
