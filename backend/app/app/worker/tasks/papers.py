@@ -12,7 +12,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@app.task(name="worker.papers.create_and_update_papers")
 def create_and_update_papers():
     base_date = datetime.date.today() - datetime.timedelta(days=-1)
     previous_date = datetime.date.today() + datetime.timedelta(days=-2)
@@ -42,6 +41,11 @@ def create_and_update_papers():
             # Create the paper
             crud.paper.create(db_session=db_session, obj_in=paper_in)
             logger.info(f"Create {paper_in.arxiv_id}")
+
+
+@app.task(name="worker.papers.create_and_update_papers")
+def celery_create_and_update_papers():
+    create_and_update_papers()
 
 
 if __name__ == '__main__':
