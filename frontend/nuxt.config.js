@@ -1,6 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config()
+const {API_URL} = process.env
 
 export default {
+  env: {
+    API_URL,
+  },
   mode: 'spa',
   /*
   ** Headers of the page
@@ -49,7 +54,8 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     '@nuxtjs/proxy',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/dotenv'
   ],
   /*
   ** Axios module configuration
@@ -61,7 +67,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: 'http://localhost:8000',
+      target: process.env.API_URL,
       pathRewrite: {
         '^/api': '/'
       }
