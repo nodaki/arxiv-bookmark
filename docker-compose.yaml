@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   backend:
+    image: nodaakihiro/arxiv-bookmark-backend:latest
     build:
       context: ./backend
       dockerfile: backend.dockerfile
@@ -24,6 +25,7 @@ services:
     image: rabbitmq:3
 
   celeryworker:
+    image: nodaakihiro/arxiv-bookmark-celeryworker:latest
     build:
       context: ./backend
       dockerfile: celeryworker.dockerfile
@@ -34,6 +36,7 @@ services:
       - .env
 
   frontend:
+    image: nodaakihiro/arxiv-bookmark-frontend:latest
     build:
       context: ./frontend
     ports:

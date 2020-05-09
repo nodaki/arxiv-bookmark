@@ -1,0 +1,53 @@
+version: '3.3'
+services:
+  backend:
+    image: nodaakihiro/arxiv-bookmark-backend:latest
+    environment:
+      - SECRET_KEY=008c2c1d65a84736cddfb98ba423159fda936e8d231186a753e76ade55536ae2
+      - FIRST_SUPERUSER=admin
+      - FIRST_SUPERUSER_EMAIL=admin@example.com
+      - FIRST_SUPERUSER_PASSWORD=admin
+      - PORT=8000
+      - MYSQL_SERVER=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=arxiv-bookmark
+      - USERS_OPEN_REGISTRATION=TRUE
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_SERVER=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=arxiv-bookmark
+      - TZ=Asia/Tokyo
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+  queue:
+    image: rabbitmq:3
+
+  celeryworker:
+    image: nodaakihiro/arxiv-bookmark-celeryworker:latest
+    environment:
+      - BROKER_URL=amqp://guest@queue//
+    depends_on:
+      - db
+      - queue
+
+  frontend:
+    image: nodaakihiro/arxiv-bookmark-frontend:latest
+    ports:
+      - 3000:3000
+
+volumes:
+  mysql-db:
